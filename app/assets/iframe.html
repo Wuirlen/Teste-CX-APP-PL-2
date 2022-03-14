@@ -1,0 +1,64 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="*" content="Access-Control-Allow-Methods" />
+  <!-- https://garden.zendesk.com -->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/combine/npm/@zendeskgarden/css-bedrock@7,npm/@zendeskgarden/css-utilities@4,npm/@zendeskgarden/css-forms@7,npm/@zendeskgarden/css-buttons@7,npm/@zendeskgarden/css-callouts@3,npm/@zendeskgarden/css-menus@9,npm/@zendeskgarden/css-arrows@3,npm/@zendeskgarden/css-tables@4,npm/@zendeskgarden/css-tooltips@4,npm/@zendeskgarden/css-modals@6,npm/@zendeskgarden/css-tags@5,npm/@zendeskgarden/css-avatars@6,npm/@zendeskgarden/css-tabs@6,npm/@zendeskgarden/css-pagination@4,npm/@zendeskgarden/css-grid@0.1.37,npm/@zendeskgarden/css-chrome@4,npm/@zendeskgarden/css-scrollbars@0.1.27" />
+  <link rel="stylesheet" href="./style.css" type="text/css" />
+</head>
+
+<body>
+  <script src="https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.min.js"></script>
+  <!-- <script src="./src/App.js" type="module"></script> -->
+  <script src="./src/server.js" type="module"></script>
+  <div id="app"></div>
+
+  <main class="container">
+    <h6>Teste zendesk</h6>
+    <label><strong>Digite seu CEP</strong></label>
+    <input type="text" id="cep" required>
+    <button onclick="pesquisarCep()">Consultar</button>
+    <div id="resultado">
+      <p>Seu resultado aqui</p>
+    </div>
+  </main>
+
+  <script>
+    const eNumero = (numero) => /^[0-9]+$/.test(numero);
+
+    const cepValido = (cep) => cep.length == 8 && eNumero(cep);
+
+    function pesquisarCep() {
+      let cep = document.querySelector('#cep').value.replace("-", "");
+
+      if (!cepValido(cep)) {
+        alert('CEP inválido!');
+        return;
+      }
+
+      let url = `https://viacep.com.br/ws/${cep}/json/`;
+
+      fetch(url).then(function (response) {
+        response.json().then(function (data) {
+          mostrarEndereco(data);
+        })
+      })
+    }
+
+    function mostrarEndereco(dados) {
+      let resultado = document.querySelector('#resultado');
+
+      resultado.innerHTML = `<ul style="line-height:180%">
+                             <li>Endereço: ${dados.logradouro}</li>
+                             <li>Complemento: ${dados.complemento}</li>
+                             <li>Bairro: ${dados.bairro}</li>
+                             <li>Cidade: ${dados.localidade} - ${dados.uf}</li>
+                            </ul>`
+    }
+  </script>
+
+</body>
+
+</html>
